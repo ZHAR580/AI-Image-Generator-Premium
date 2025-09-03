@@ -194,3 +194,31 @@ voiceGenerateBtn.addEventListener('click', ()=>{
   downloadAudioLink.href = '#';
   downloadAudioLink.removeAttribute('download');
 });
+// ================================
+// 🎙 Voice Modal Open / Close Fix
+// ================================
+const voiceModal = document.getElementById("voiceModal");
+const voiceBtn = document.getElementById("openVoice");
+const closeBtn = document.querySelector(".voice-close");
+
+// open modal
+if (voiceBtn) {
+  voiceBtn.addEventListener("click", () => {
+    voiceModal.style.display = "block";
+  });
+}
+
+// close modal
+if (closeBtn) {
+  closeBtn.addEventListener("click", () => {
+    voiceModal.style.display = "none";
+  });
+}
+
+// close if clicked outside
+window.addEventListener("click", (e) => {
+  if (e.target === voiceModal) {
+    voiceModal.style.display = "none";
+  }
+});
+
