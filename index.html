@@ -3,22 +3,23 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AI Image & Video Studio — Premium</title>
+  <title>AI Studio — Premium Final</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <aside class="sidebar">
     <div class="brand">
       <h2>AI Studio</h2>
-      <small>Personal Generator — Premium Theme</small>
+      <small>Premium — Voice & Image</small>
     </div>
 
     <div class="panel">
       <h3>Modes</h3>
       <button class="mode-btn" data-mode="normal">Normal Image</button>
       <button class="mode-btn" data-mode="reference">Reference Image</button>
-      <button class="mode-btn" data-mode="story">Storytelling (100)</button>
+      <button class="mode-btn" data-mode="story">Storytelling</button>
       <button class="mode-btn" data-mode="thumbnail">Thumbnail</button>
+      <button class="mode-btn" data-mode="studio">Studio</button>
       <hr>
       <h3>Model</h3>
       <select id="model">
@@ -26,23 +27,11 @@
         <option value="flux-schnell">Flux-Schnell — Fast</option>
         <option value="sd15">Stable Diffusion 1.5</option>
         <option value="sdxl">SDXL 1.0</option>
-        <option value="dreamshaper">DreamShaper</option>
         <option value="openjourney">OpenJourney (MJ-like)</option>
       </select>
-
-      <h3>Video / Render</h3>
+      <h3>Render</h3>
       <label><input type="radio" name="render_mode" value="fast" checked> Fast</label>
       <label><input type="radio" name="render_mode" value="high"> High Quality</label>
-      <label><input type="radio" name="render_mode" value="balanced"> Balanced</label>
-
-      <h3>Transitions</h3>
-      <select id="transition">
-        <option value="cut">Cut</option>
-        <option value="fade">Fade</option>
-        <option value="pan">Pan</option>
-        <option value="zoom">Zoom</option>
-      </select>
-
       <hr>
       <button id="open-settings">Settings</button>
     </div>
@@ -98,14 +87,9 @@
 
         <hr>
         <label for="script">Script / Voice (optional)</label>
-        <textarea id="script" placeholder="Optional narration script for storytelling or video..."></textarea>
+        <textarea id="script" placeholder="Optional narration script for storytelling..."></textarea>
         <div class="voice-row">
-          <select id="voice-select">
-            <option value="bark">Bark (TTS)</option>
-            <option value="coqui">Coqui TTS</option>
-            <option value="eleven">Premium Voice</option>
-          </select>
-          <button id="tts-preview">Play Voice Preview</button>
+          <button id="open-voice-panel">Open Voice Studio</button>
         </div>
 
       </div>
@@ -119,7 +103,66 @@
         <div id="gallery" class="gallery"></div>
       </div>
     </section>
+
+    <!-- Studio workspace -->
+    <section id="studio-workspace" class="studio hidden">
+      <header><h2>Studio Workspace</h2>
+      <p>Paste script, set scenes, use reference image and generate. Use Voice Studio to preview and download narration.</p></header>
+      <textarea id="studio-script" placeholder="Paste full script/story here..."></textarea>
+      <div class="studio-controls">
+        <label>Scenes to generate: <input id="studio-scenes" type="number" value="10" min="1" max="200"></label>
+        <label>Use reference image: <input id="studio-ref-toggle" type="checkbox"></label>
+        <button id="run-studio">Run Studio</button>
+        <button id="studio-stop" disabled>Stop</button>
+      </div>
+      <div id="studio-timeline" class="timeline"></div>
+    </section>
   </main>
+
+  <!-- Voice modal / panel -->
+  <div id="voice-panel" class="voice-panel hidden">
+    <div class="voice-inner">
+      <button class="close-voice" id="close-voice">&times;</button>
+      <h3>Voice Studio — Select Voice & Generate</h3>
+
+      <label for="voice-model">Voice Model</label>
+      <select id="voice-model">
+        <option value="eleven">ElevenLabs-style (Premium)</option>
+        <option value="bark">Bark (Natural)</option>
+        <option value="coqui">Coqui TTS (Fast)</option>
+        <option value="custom">Custom / Cloned</option>
+      </select>
+
+      <label for="voice-style">Voice Style</label>
+      <select id="voice-style">
+        <option value="narration">Narration</option>
+        <option value="calm">Calm</option>
+        <option value="dramatic">Dramatic</option>
+        <option value="news">News-Anchor</option>
+      </select>
+
+      <div class="sliders">
+        <label>Speed <input id="voice-speed" type="range" min="0.5" max="1.7" step="0.05" value="1"></label>
+        <label>Pitch <input id="voice-pitch" type="range" min="0.7" max="1.5" step="0.05" value="1"></label>
+      </div>
+
+      <label for="voice-text">Text for Voice</label>
+      <textarea id="voice-text" placeholder="Enter script for narration..."></textarea>
+
+      <div class="voice-actions">
+        <button id="voice-preview">Play Preview</button>
+        <button id="voice-generate">Generate & Download</button>
+        <button id="voice-stop" disabled>Stop</button>
+      </div>
+
+      <div id="voice-player" class="voice-player hidden">
+        <audio id="audio-preview" controls></audio>
+        <a id="download-audio" href="#" download="narration.mp3">Download Audio</a>
+      </div>
+
+      <p class="note">Note: This panel requires backend TTS integration (Colab / API). Currently acts as UI placeholder.</p>
+    </div>
+  </div>
 
   <!-- Modal for image preview -->
   <div id="modal" class="modal hidden">

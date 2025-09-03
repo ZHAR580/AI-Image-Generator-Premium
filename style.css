@@ -32,3 +32,12 @@ button{background:var(--accent);border:none;padding:10px 14px;border-radius:10px
 .progress .bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#ff9aa8)}
 .progress-text{font-size:13px;color:var(--muted);margin-top:6px}
 .hidden{display:none}
+.voice-panel{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(2,6,8,0.85);z-index:9999}
+.voice-inner{background:#081018;padding:20px;border-radius:12px;max-width:760px;width:94%;color:#e6eef8}
+.sliders{display:flex;gap:12px;margin:10px 0}
+.voice-actions{display:flex;gap:10px;margin-top:10px}
+.voice-player{margin-top:12px}
+.studio{padding:20px;background:linear-gradient(180deg,#071018,#08121a);border-top:1px solid rgba(255,255,255,0.02)}
+.studio textarea{min-height:160px}
+.timeline{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.timeline .scene{background:#0b0c0f;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);width:180px}

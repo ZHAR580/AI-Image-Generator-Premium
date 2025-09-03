@@ -1,30 +1,19 @@
-# AI-Image-Generator-Premium
+# AI-Image-Generator-Studio-Final (Frontend)
 
-This package includes a polished front-end (GitHub Pages-ready) and placeholders for backend integration (Colab / FastAPI).
+This is the **final frontend** package with Studio and Voice Studio UI. It is designed for GitHub Pages hosting and connects to a backend (Colab or hosted API) for actual generation work.
 
-## What is included
-- `frontend/` — index.html, style.css, script.js (premium dark theme, sidebar, model selector)
-- README with setup steps.
+## What changed in this final package
+- Added Voice Studio modal with multiple premium voice model options, speed/pitch sliders, play preview and generate/download buttons (placeholders).
+- Studio workspace now included in the main UI (script input, scene controls, timeline view).
+- Model selector and rendering options on sidebar.
 
 ## How to use
-1. Upload the `frontend` folder to your GitHub repo and enable GitHub Pages (branch `main`, folder `/frontend` or root).
-2. Replace placeholder API calls in `script.js` with your backend endpoints (Colab/ngrok or hosted API):
-   - `/generate_images` — should accept POST with prompt, model, size, variations and return `{ images: [url, ...] }`
-   - `/generate_story` — for storytelling (100 scenes)
-   - `/tts_preview` — return audio preview URL for script text
-3. Run a Colab notebook (we recommend an all-in-one notebook) to host the backend:
-   - Mount Drive, load SD/Flux models, implement endpoints using FastAPI and ngrok (or use pyngrok to expose).
-4. Connect frontend to backend by replacing placeholder with your public endpoint.
+1. Upload the `frontend/` folder from this zip to your GitHub repo and enable GitHub Pages (branch `main`, folder `/` or `/frontend`).
+2. Replace placeholder calls in `script.js` with your backend endpoints:
+   - `POST /generate_images` — returns `{ images: [url, ...] }`
+   - `POST /generate_story` — returns `{ scenes: [{text, image_url}, ...] }`
+   - `POST /tts_preview` or `/generate_audio` — returns `{ audio_url: "..." }`
+3. I can build the Colab all-in-one backend (image gen + TTS + endpoints via FastAPI + ngrok). Reply **"Make Colab notebook"** if you want me to prepare it.
 
-## Recommended endpoints examples
-- POST /generate_images
-  - Body: { prompt, model, size, variations, nsfw, reference_image (optional) }
-  - Response: { images: ["https://drive.google.com/..., ...] }
-
-- POST /tts_preview
-  - Body: { script, voice }
-  - Response: { audio: "https://..." }
-
-## Notes
-- This front-end is ready and styled. Backend model integration (Stable Diffusion, Flux models, TTS) must be implemented in Colab or a server with GPU.
-- If you'd like, I can add a ready Colab notebook (all-in-one) next that implements `/generate_images`, `/generate_story`, and `/tts_preview` endpoints and shows exactly how to connect with ngrok.
+## Note
+This frontend is complete and theme-styled. Backend integration is required for full functionality (high-quality TTS, model selection, reference-image conditioning).
