@@ -3,177 +3,147 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AI Studio — Premium Final</title>
+  <title>AI Generator — Premium Studio</title>
+
+  <!-- Font + Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <aside class="sidebar">
-    <div class="brand">
-      <h2>AI Studio</h2>
-      <small>Premium — Voice & Image</small>
-    </div>
-
-    <div class="panel">
-      <h3>Modes</h3>
-      <button class="mode-btn" data-mode="normal">Normal Image</button>
-      <button class="mode-btn" data-mode="reference">Reference Image</button>
-      <button class="mode-btn" data-mode="story">Storytelling</button>
-      <button class="mode-btn" data-mode="thumbnail">Thumbnail</button>
-      <button class="mode-btn" data-mode="studio">Studio</button>
-      <hr>
-      <h3>Model</h3>
-      <select id="model">
-        <option value="flux-dev">Flux-Dev — Ultra</option>
-        <option value="flux-schnell">Flux-Schnell — Fast</option>
-        <option value="sd15">Stable Diffusion 1.5</option>
-        <option value="sdxl">SDXL 1.0</option>
-        <option value="openjourney">OpenJourney (MJ-like)</option>
-      </select>
-      <h3>Render</h3>
-      <label><input type="radio" name="render_mode" value="fast" checked> Fast</label>
-      <label><input type="radio" name="render_mode" value="high"> High Quality</label>
-      <hr>
-      <button id="open-settings">Settings</button>
-    </div>
-  </aside>
-
-  <main class="main">
-    <header class="top">
-      <div class="left">
-        <h1 id="mode-title">Normal Image Mode</h1>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo"><i class="fa-solid fa-robot"></i></div>
+        <div class="title">AI Studio</div>
+        <div class="sub">Premium Interface</div>
       </div>
-      <div class="right">
-        <button id="download-zip">Download ZIP</button>
-        <button id="clear-gallery">Clear</button>
+
+      <nav class="modes">
+        <button class="mode-btn active" data-mode="normal"><i class="fa-solid fa-image"></i><span>Images</span></button>
+        <button class="mode-btn" data-mode="reference"><i class="fa-solid fa-user"></i><span>Reference</span></button>
+        <button class="mode-btn" data-mode="studio"><i class="fa-solid fa-clapperboard"></i><span>Studio</span></button>
+        <button class="mode-btn" data-mode="voice"><i class="fa-solid fa-microphone"></i><span>Voice</span></button>
+        <button class="mode-btn" data-mode="settings"><i class="fa-solid fa-gear"></i><span>Settings</span></button>
+      </nav>
+
+      <div class="footer-note">
+        <small>Connect backend: Colab / FastAPI</small>
       </div>
-    </header>
+    </aside>
 
-    <section class="controls">
-      <div class="left-col">
-        <label for="prompt">Prompt</label>
-        <textarea id="prompt" placeholder="Type cinematic prompt..."></textarea>
+    <main class="main">
+      <header class="topbar">
+        <h1 id="mode-title">Images</h1>
+        <div class="actions">
+          <button id="download-zip"><i class="fa-solid fa-download"></i> Download</button>
+          <button id="clear-gallery"><i class="fa-solid fa-trash"></i> Clear</button>
+        </div>
+      </header>
 
-        <div id="reference-upload" class="hidden">
-          <label>Upload Reference Image</label>
-          <input type="file" id="ref-img" accept="image/*">
+      <section class="panel">
+        <!-- IMAGE CONTROLS -->
+        <div id="normal-panel" class="panel-card">
+          <label class="label">Prompt</label>
+          <textarea id="prompt" placeholder="Type cinematic prompt (e.g. Cinematic ultra-realistic French woman, 1940s Paris...)"></textarea>
+
+          <div class="row">
+            <label>Variations
+              <select id="variations">
+                <option>1</option><option>4</option><option>7</option><option>9</option>
+              </select>
+            </label>
+
+            <label>Aspect
+              <select id="size">
+                <option value="512x512">512×512 (1:1)</option>
+                <option value="768x1024">768×1024 (3:4)</option>
+                <option value="1280x720">1280×720 (16:9)</option>
+                <option value="1920x820">1920×820 (21:9)</option>
+              </select>
+            </label>
+
+            <label class="checkbox"><input type="checkbox" id="nsfw"> Allow NSFW</label>
+          </div>
+
+          <div class="row">
+            <label>Model
+              <select id="model">
+                <option value="flux-dev">Flux-Dev — Ultra</option>
+                <option value="flux-schnell">Flux-Schnell — Fast</option>
+                <option value="sd15">Stable Diffusion 1.5</option>
+                <option value="sdxl">SDXL 1.0</option>
+                <option value="openjourney">OpenJourney (MJ-like)</option>
+              </select>
+            </label>
+
+            <button id="generate" class="primary">Generate Images</button>
+          </div>
         </div>
 
-        <div class="row">
-          <label>Variations
-            <select id="variations">
-              <option value="1">1</option>
-              <option value="4">4</option>
-              <option value="7">7</option>
-              <option value="9">9</option>
-            </select>
-          </label>
+        <!-- STUDIO WORKSPACE -->
+        <div id="studio-panel" class="panel-card hidden">
+          <label class="label">Studio — Script to Scenes</label>
+          <textarea id="studio-script" placeholder="Paste your long script or story. Studio will split into scenes."></textarea>
 
-          <label>Aspect Ratio
-            <select id="size">
-              <option value="512x512">512×512 (1:1)</option>
-              <option value="768x1024">768×1024 (3:4)</option>
-              <option value="1280x720">1280×720 (16:9)</option>
-              <option value="1920x820">1920×820 (21:9)</option>
-            </select>
-          </label>
+          <div class="row">
+            <label>Scenes <input id="studio-scenes" type="number" min="1" max="200" value="10"></label>
+            <label>Reference <input id="studio-ref" type="file" accept="image/*"></label>
+            <button id="run-studio" class="primary">Run Studio</button>
+          </div>
 
-          <label><input type="checkbox" id="nsfw"> Allow NSFW</label>
+          <div id="studio-timeline" class="timeline"></div>
         </div>
 
-        <div class="buttons">
-          <button id="generate">Generate</button>
-          <button id="generate-story">Generate Story (100)</button>
+        <!-- VOICE WORKSPACE (inline — no popups) -->
+        <div id="voice-panel" class="panel-card hidden">
+          <label class="label">Voice Studio — Select model, style, generate</label>
+          <textarea id="voice-text" placeholder="Enter narration text here..."></textarea>
+
+          <div class="row">
+            <label>Voice Model
+              <select id="voice-model">
+                <option value="eleven">ElevenLabs-style (Premium)</option>
+                <option value="bark">Bark (Natural)</option>
+                <option value="coqui">Coqui (Fast)</option>
+                <option value="custom">Custom / Cloned</option>
+              </select>
+            </label>
+
+            <label>Style
+              <select id="voice-style">
+                <option value="narration">Narration</option>
+                <option value="dramatic">Dramatic</option>
+                <option value="calm">Calm</option>
+                <option value="news">News</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="row">
+            <label>Speed <input id="voice-speed" type="range" min="0.6" max="1.6" step="0.05" value="1"></label>
+            <label>Pitch <input id="voice-pitch" type="range" min="0.7" max="1.5" step="0.05" value="1"></label>
+            <button id="generate-voice" class="primary">Generate Voice</button>
+          </div>
+
+          <div id="voice-result" class="voice-result hidden">
+            <audio id="voice-player" controls></audio>
+            <a id="voice-download" class="btn-link" href="#" download="narration.mp3">⬇ Download audio</a>
+          </div>
+          <p class="note">Note: High-quality voices require backend TTS integration (Colab/ElevenLabs/Coqui).</p>
         </div>
 
-        <hr>
-        <label for="script">Script / Voice (optional)</label>
-        <textarea id="script" placeholder="Optional narration script for storytelling..."></textarea>
-        <div class="voice-row">
-          <button id="open-voice-panel">Open Voice Studio</button>
+        <!-- GALLERY -->
+        <div id="gallery" class="gallery-grid"></div>
+
+        <!-- PROGRESS -->
+        <div id="progress" class="progress hidden">
+          <div id="progress-bar"></div>
+          <div id="progress-text">Working…</div>
         </div>
-
-      </div>
-
-      <div class="right-col">
-        <div class="progress" id="progress" style="display:none;">
-          <div class="bar" id="progress-bar"></div>
-          <div id="progress-text"></div>
-        </div>
-
-        <div id="gallery" class="gallery"></div>
-      </div>
-    </section>
-
-    <!-- Studio workspace -->
-    <section id="studio-workspace" class="studio hidden">
-      <header><h2>Studio Workspace</h2>
-      <p>Paste script, set scenes, use reference image and generate. Use Voice Studio to preview and download narration.</p></header>
-      <textarea id="studio-script" placeholder="Paste full script/story here..."></textarea>
-      <div class="studio-controls">
-        <label>Scenes to generate: <input id="studio-scenes" type="number" value="10" min="1" max="200"></label>
-        <label>Use reference image: <input id="studio-ref-toggle" type="checkbox"></label>
-        <button id="run-studio">Run Studio</button>
-        <button id="studio-stop" disabled>Stop</button>
-      </div>
-      <div id="studio-timeline" class="timeline"></div>
-    </section>
-  </main>
-
-  <!-- Voice modal / panel -->
-  <div id="voice-panel" class="voice-panel hidden">
-    <div class="voice-inner">
-      <button class="close-voice" id="close-voice">&times;</button>
-      <h3>Voice Studio — Select Voice & Generate</h3>
-
-      <label for="voice-model">Voice Model</label>
-      <select id="voice-model">
-        <option value="eleven">ElevenLabs-style (Premium)</option>
-        <option value="bark">Bark (Natural)</option>
-        <option value="coqui">Coqui TTS (Fast)</option>
-        <option value="custom">Custom / Cloned</option>
-      </select>
-
-      <label for="voice-style">Voice Style</label>
-      <select id="voice-style">
-        <option value="narration">Narration</option>
-        <option value="calm">Calm</option>
-        <option value="dramatic">Dramatic</option>
-        <option value="news">News-Anchor</option>
-      </select>
-
-      <div class="sliders">
-        <label>Speed <input id="voice-speed" type="range" min="0.5" max="1.7" step="0.05" value="1"></label>
-        <label>Pitch <input id="voice-pitch" type="range" min="0.7" max="1.5" step="0.05" value="1"></label>
-      </div>
-
-      <label for="voice-text">Text for Voice</label>
-      <textarea id="voice-text" placeholder="Enter script for narration..."></textarea>
-
-      <div class="voice-actions">
-        <button id="voice-preview">Play Preview</button>
-        <button id="voice-generate">Generate & Download</button>
-        <button id="voice-stop" disabled>Stop</button>
-      </div>
-
-      <div id="voice-player" class="voice-player hidden">
-        <audio id="audio-preview" controls></audio>
-        <a id="download-audio" href="#" download="narration.mp3">Download Audio</a>
-      </div>
-
-      <p class="note">Note: This panel requires backend TTS integration (Colab / API). Currently acts as UI placeholder.</p>
-    </div>
-  </div>
-
-  <!-- Modal for image preview -->
-  <div id="modal" class="modal hidden">
-    <div class="modal-inner">
-      <button class="close" id="modal-close">&times;</button>
-      <img id="modal-img" src="">
-      <div class="modal-actions">
-        <button id="regenerate">Regenerate</button>
-        <button id="download">Download</button>
-      </div>
-    </div>
+      </section>
+    </main>
   </div>
 
   <script src="script.js"></script>
