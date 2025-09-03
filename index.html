@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>AI Studio Pro — Bulk Stores</title>
+<title>AI Studio Pro — Final Package</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
@@ -14,78 +14,190 @@
     <div class="brand">
       <div class="logo"><i class="fa-solid fa-robot"></i></div>
       <div class="title">AI Studio Pro</div>
-      <div class="sub">Bulk → Stores</div>
+      <div class="sub">Images • Reference • Stores • Studio • Video Editor • Voice</div>
     </div>
 
     <nav class="modes">
-      <button class="mode-btn" data-mode="images"><i class="fa-solid fa-image"></i><span>Images</span></button>
-      <button class="mode-btn" data-mode="reference"><i class="fa-solid fa-user"></i><span>Reference</span></button>
-      <button class="mode-btn active" data-mode="stores"><i class="fa-solid fa-store"></i><span>Stores (Bulk)</span></button>
-      <button class="mode-btn" data-mode="studio"><i class="fa-solid fa-clapperboard"></i><span>Studio</span></button>
-      <button class="mode-btn" data-mode="voice"><i class="fa-solid fa-microphone"></i><span>Voice</span></button>
-      <button class="mode-btn" data-mode="settings"><i class="fa-solid fa-gear"></i><span>Settings</span></button>
+      <button class="mode-btn active" data-target="section-images"><i class="fa-solid fa-image"></i><span>Images</span></button>
+      <button class="mode-btn" data-target="section-reference"><i class="fa-solid fa-user"></i><span>Reference</span></button>
+      <button class="mode-btn" data-target="section-stores"><i class="fa-solid fa-store"></i><span>Stores</span></button>
+      <button class="mode-btn" data-target="section-studio"><i class="fa-solid fa-clapperboard"></i><span>Studio</span></button>
+      <button class="mode-btn" data-target="section-video"><i class="fa-solid fa-film"></i><span>Video Editor</span></button>
+      <button class="mode-btn" data-target="section-voice"><i class="fa-solid fa-microphone"></i><span>Voice</span></button>
+      <button class="mode-btn" data-target="section-settings"><i class="fa-solid fa-gear"></i><span>Settings</span></button>
     </nav>
-    <div class="footer-note"><small>Frontend prototype — backend required for real generation</small></div>
+
+    <div class="footer-note"><small>Frontend prototype — connect to Colab or backend for real generation & export</small></div>
   </aside>
 
   <main class="main">
     <header class="topbar">
-      <h1 id="mode-title">Stores — Bulk Image Generator</h1>
+      <h1 id="page-title">Images</h1>
       <div class="actions">
         <button id="export-project" title="Export project JSON"><i class="fa-solid fa-file-export"></i></button>
         <button id="import-project" title="Import project JSON"><i class="fa-solid fa-file-import"></i></button>
+        <input id="import-file" type="file" accept="application/json" class="hidden">
       </div>
     </header>
 
-    <section class="panel">
-      <!-- STORES PANEL -->
-      <div id="stores-panel" class="panel-card">
-        <label class="label">Manage Stores — create store presets and bulk-generate images per store</label>
-        <div class="stores-row">
-          <div class="stores-list">
-            <h3>Stores</h3>
-            <div id="stores-container"></div>
-            <div style="margin-top:10px">
-              <input id="new-store-name" placeholder="New store name"/>
-              <button id="add-store" class="primary">Add Store</button>
-            </div>
-          </div>
-          <div class="store-config">
-            <h3>Selected Store</h3>
-            <div id="selected-store-panel">No store selected</div>
-            <div id="store-controls" class="hidden">
-              <label>Prompt template (use {{product}} or {{store}} placeholders)</label>
-              <textarea id="store-prompt" placeholder="e.g. High-quality photo of {{product}} at {{store}} store, white background"></textarea>
-              <div class="row">
-                <label>Products CSV (optional) <input type="file" id="store-csv" accept=".csv"></label>
-                <label>Count per product <input id="store-count" type="number" min="1" max="100" value="3"></label>
-              </div>
-              <div class="row">
-                <label>Size <select id="store-size"><option>512x512</option><option>768x768</option><option>1024x1024</option></select></label>
-                <label>Model <select id="store-model"><option>Flux-Dev</option><option>SDXL</option><option>OpenJourney</option></select></label>
-              </div>
-              <div style="margin-top:8px">
-                <button id="generate-store" class="primary">Generate Bulk for Store</button>
-                <button id="download-store-zip" class="secondary">Download Store ZIP</button>
-                <button id="clear-store-images" class="secondary">Clear Store Images</button>
-              </div>
-            </div>
+    <section class="content">
+
+      <!-- IMAGES SECTION -->
+      <div id="section-images" class="section active">
+        <div class="panel-card">
+          <label class="label">Prompt</label>
+          <textarea id="prompt" placeholder="Type cinematic prompt..."></textarea>
+          <div class="row">
+            <label>Variations <select id="variations"><option>1</option><option>4</option><option>7</option><option>9</option></select></label>
+            <label>Size <select id="size"><option>512x512</option><option>768x1024</option><option>1280x720</option></select></label>
+            <label>Model <select id="model"><option>flux-dev</option><option>sdxl</option><option>openjourney</option></select></label>
+            <button id="generate" class="primary">Generate</button>
           </div>
         </div>
-        <hr/>
-        <div>
-          <h4>Global Bulk Queue</h4>
-          <div id="bulk-queue"></div>
+        <div id="images-gallery" class="gallery-grid"></div>
+      </div>
+
+      <!-- REFERENCE SECTION -->
+      <div id="section-reference" class="section hidden">
+        <div class="panel-card">
+          <label class="label">Reference Image — Upload & Settings (Face/Style Conditioning)</label>
+          <div class="row">
+            <label>Upload <input type="file" id="ref-upload" accept="image/*"></label>
+            <label>Strength <input id="ref-strength" type="range" min="0" max="1" step="0.05" value="0.7"></label>
+            <label>Style <select id="ref-style"><option>Realistic</option><option>Cinematic</option><option>Anime</option><option>Cartoon</option></select></label>
+            <button id="ref-generate" class="primary">Generate from Reference</button>
+          </div>
+          <div id="ref-preview" class="ref-preview"></div>
+          <div class="note">Tip: Use a clear face image as reference to preserve identity/style. Backend required for face-conditioning transfer.</div>
         </div>
       </div>
 
-      <!-- GALLERY for store images -->
-      <div id="gallery" class="gallery-grid"></div>
+      <!-- STORES SECTION -->
+      <div id="section-stores" class="section hidden">
+        <div class="panel-card">
+          <label class="label">Stores — Bulk presets & manifest</label>
+          <div class="stores-row">
+            <div class="stores-list">
+              <h3>Stores</h3>
+              <div id="stores-container"></div>
+              <div style="margin-top:10px">
+                <input id="new-store-name" placeholder="New store name"/><button id="add-store" class="primary">Add Store</button>
+              </div>
+            </div>
+            <div class="store-config">
+              <h3>Selected Store</h3>
+              <div id="selected-store-panel">No store selected</div>
+              <div id="store-controls" class="hidden">
+                <label>Prompt template (use {{product}} and {{store}})</label>
+                <textarea id="store-prompt" placeholder="e.g. product photo of {{product}} at {{store}} shop, white bg"></textarea>
+                <div class="row">
+                  <label>Products CSV <input type="file" id="store-csv" accept=".csv"></label>
+                  <label>Count per product <input id="store-count" type="number" min="1" max="100" value="3"></label>
+                </div>
+                <div class="row">
+                  <label>Size <select id="store-size"><option>512x512</option><option>768x768</option></select></label>
+                  <label>Model <select id="store-model"><option>flux-dev</option><option>sdxl</option></select></label>
+                </div>
+                <div style="margin-top:8px">
+                  <button id="generate-store" class="primary">Generate Bulk</button>
+                  <button id="download-store-zip" class="secondary">Download Manifest</button>
+                  <button id="clear-store-images" class="secondary">Clear Store Images</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="stores-gallery" class="gallery-grid"></div>
+      </div>
 
-      <!-- PROGRESS -->
-      <div id="progress" class="progress hidden">
-        <div id="progress-bar"></div>
-        <div id="progress-text">Working…</div>
+      <!-- STUDIO SECTION -->
+      <div id="section-studio" class="section hidden">
+        <div class="panel-card">
+          <label class="label">Studio — Script to Scenes</label>
+          <textarea id="studio-script" placeholder="Paste your script/story here..."></textarea>
+          <div class="row">
+            <label>Scenes <input id="studio-scenes" type="number" min="1" max="200" value="10"></label>
+            <button id="run-studio" class="primary">Run Studio</button>
+          </div>
+        </div>
+        <div id="studio-timeline" class="timeline"></div>
+      </div>
+
+      <!-- VIDEO EDITOR SECTION -->
+      <div id="section-video" class="section hidden">
+        <div class="panel-card">
+          <label class="label">Video Editor — Manual timeline editing</label>
+          <div class="row">
+            <label>Import Images <input type="file" id="video-import" accept="image/*" multiple></label>
+            <label>Background Music <input type="file" id="video-music" accept="audio/*"></label>
+            <button id="add-to-timeline" class="primary">Add to Timeline</button>
+            <button id="preview-video" class="secondary">Preview</button>
+            <button id="export-video" class="secondary">Export (Colab)</button>
+          </div>
+        </div>
+
+        <div class="video-workspace">
+          <div class="left-panel">
+            <div class="card">
+              <h3>Timeline Controls</h3>
+              <button id="add-scene-manual" class="primary">Add Blank Scene</button>
+              <button id="clear-timeline" class="secondary">Clear Timeline</button>
+              <div style="margin-top:8px">
+                <label>Default duration (s) <input id="default-duration" type="number" value="3" min="1" max="30"></label>
+                <label>Default transition
+                  <select id="default-transition"><option>cut</option><option>fade</option><option>zoom</option><option>slide-left</option></select>
+                </label>
+              </div>
+            </div>
+            <div class="card">
+              <h3>Selected Scene</h3>
+              <div id="vid-selected-info">No scene selected</div>
+              <div class="controls">
+                <label>Replace Image <input type="file" id="vid-replace-image" accept="image/*"></label>
+                <label>Transition <select id="vid-transition"><option>cut</option><option>fade</option><option>zoom</option></select></label>
+                <label>Duration (s) <input id="vid-duration" type="number" min="1" max="30" value="3"></label>
+                <button id="save-vid-scene" class="primary">Save</button>
+                <button id="delete-vid-scene" class="secondary">Delete</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="right-panel">
+            <div class="timeline-editor" id="timeline-editor" ondragover="event.preventDefault()"></div>
+            <p class="note">Drag images from imports into timeline slots, reorder by drag, double-click a scene to edit.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- VOICE SECTION -->
+      <div id="section-voice" class="section hidden">
+        <div class="panel-card">
+          <label class="label">Voice Studio — Inline TTS</label>
+          <textarea id="voice-text" placeholder="Enter narration or use scene text..."></textarea>
+          <div class="row">
+            <label>Model <select id="voice-model"><option>Eleven</option><option>Bark</option><option>Coqui</option></select></label>
+            <label>Style <select id="voice-style"><option>narration</option><option>dramatic</option></select></label>
+            <button id="generate-voice" class="primary">Generate</button>
+          </div>
+        </div>
+        <div id="voice-result" class="voice-result hidden"><audio id="voice-player" controls></audio><a id="voice-download" href="#" download="narration.mp3">⬇ Download</a></div>
+      </div>
+
+      <!-- SETTINGS SECTION -->
+      <div id="section-settings" class="section hidden">
+        <div class="panel-card">
+          <label class="label">Settings — Global model & output</label>
+          <div class="row">
+            <label>Model<select id="setting-model"><option>flux-dev</option><option>sdxl</option></select></label>
+            <label>Size<select id="setting-size"><option>512x512</option><option>768x1024</option></select></label>
+            <label>Steps<input id="setting-steps" type="number" value="20" min="1" max="150"></label>
+            <label>CFG scale<input id="setting-cfg" type="number" value="7.5" step="0.1"></label>
+          </div>
+          <div class="row" style="margin-top:12px">
+            <label><input type="checkbox" id="setting-safe"> Enable Safe Mode</label>
+            <label>Output format<select id="setting-format"><option>png</option><option>jpg</option></select></label>
+          </div>
+        </div>
       </div>
 
     </section>
