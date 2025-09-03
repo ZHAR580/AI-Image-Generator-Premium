@@ -3,33 +3,33 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AI Generator — Premium Studio</title>
+  <title>AI Studio Pro — Frontend Prototype</title>
 
-  <!-- Font + Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="app">
     <aside class="sidebar">
       <div class="brand">
         <div class="logo"><i class="fa-solid fa-robot"></i></div>
-        <div class="title">AI Studio</div>
-        <div class="sub">Premium Interface</div>
+        <div class="title">AI Studio Pro</div>
+        <div class="sub">Premium Story & Editor</div>
       </div>
 
       <nav class="modes">
-        <button class="mode-btn active" data-mode="normal"><i class="fa-solid fa-image"></i><span>Images</span></button>
+        <button class="mode-btn active" data-mode="images"><i class="fa-solid fa-image"></i><span>Images</span></button>
         <button class="mode-btn" data-mode="reference"><i class="fa-solid fa-user"></i><span>Reference</span></button>
         <button class="mode-btn" data-mode="studio"><i class="fa-solid fa-clapperboard"></i><span>Studio</span></button>
         <button class="mode-btn" data-mode="voice"><i class="fa-solid fa-microphone"></i><span>Voice</span></button>
+        <button class="mode-btn" data-mode="project"><i class="fa-solid fa-folder-open"></i><span>Project</span></button>
         <button class="mode-btn" data-mode="settings"><i class="fa-solid fa-gear"></i><span>Settings</span></button>
       </nav>
 
       <div class="footer-note">
-        <small>Connect backend: Colab / FastAPI</small>
+        <small>Frontend prototype — connect to Colab backend for full generation</small>
       </div>
     </aside>
 
@@ -37,16 +37,17 @@
       <header class="topbar">
         <h1 id="mode-title">Images</h1>
         <div class="actions">
-          <button id="download-zip"><i class="fa-solid fa-download"></i> Download</button>
-          <button id="clear-gallery"><i class="fa-solid fa-trash"></i> Clear</button>
+          <button id="download-project" title="Export project JSON"><i class="fa-solid fa-file-export"></i></button>
+          <button id="import-project" title="Import project JSON"><i class="fa-solid fa-file-import"></i></button>
+          <button id="clear-all" title="Clear all scenes"><i class="fa-solid fa-trash"></i></button>
         </div>
       </header>
 
       <section class="panel">
-        <!-- IMAGE CONTROLS -->
-        <div id="normal-panel" class="panel-card">
+        <!-- IMAGES PANEL -->
+        <div id="images-panel" class="panel-card">
           <label class="label">Prompt</label>
-          <textarea id="prompt" placeholder="Type cinematic prompt (e.g. Cinematic ultra-realistic French woman, 1940s Paris...)"></textarea>
+          <textarea id="prompt" placeholder="Type cinematic prompt..."></textarea>
 
           <div class="row">
             <label>Variations
@@ -57,84 +58,136 @@
 
             <label>Aspect
               <select id="size">
-                <option value="512x512">512×512 (1:1)</option>
-                <option value="768x1024">768×1024 (3:4)</option>
-                <option value="1280x720">1280×720 (16:9)</option>
-                <option value="1920x820">1920×820 (21:9)</option>
+                <option value="512x512">512×512</option>
+                <option value="768x1024">768×1024</option>
+                <option value="1280x720">1280×720</option>
               </select>
             </label>
 
             <label class="checkbox"><input type="checkbox" id="nsfw"> Allow NSFW</label>
-          </div>
-
-          <div class="row">
-            <label>Model
-              <select id="model">
-                <option value="flux-dev">Flux-Dev — Ultra</option>
-                <option value="flux-schnell">Flux-Schnell — Fast</option>
-                <option value="sd15">Stable Diffusion 1.5</option>
-                <option value="sdxl">SDXL 1.0</option>
-                <option value="openjourney">OpenJourney (MJ-like)</option>
-              </select>
-            </label>
-
-            <button id="generate" class="primary">Generate Images</button>
+            <button id="generate" class="primary">Generate</button>
           </div>
         </div>
 
-        <!-- STUDIO WORKSPACE -->
+        <!-- REFERENCE PANEL -->
+        <div id="reference-panel" class="panel-card hidden">
+          <label class="label">Reference Image + Prompt</label>
+          <textarea id="ref-prompt" placeholder="Describe style or person..."></textarea>
+          <div class="row">
+            <label>Upload Reference <input type="file" id="ref-image" accept="image/*"></label>
+            <label>Strength <input type="range" id="ref-strength" min="0" max="1" step="0.05" value="0.7"></label>
+            <button id="ref-generate" class="primary">Generate with Reference</button>
+          </div>
+        </div>
+
+        <!-- STUDIO PANEL -->
         <div id="studio-panel" class="panel-card hidden">
-          <label class="label">Studio — Script to Scenes</label>
-          <textarea id="studio-script" placeholder="Paste your long script or story. Studio will split into scenes."></textarea>
-
-          <div class="row">
-            <label>Scenes <input id="studio-scenes" type="number" min="1" max="200" value="10"></label>
-            <label>Reference <input id="studio-ref" type="file" accept="image/*"></label>
-            <button id="run-studio" class="primary">Run Studio</button>
+          <label class="label">Studio — Timeline Editor</label>
+          <div class="studio-controls">
+            <button id="add-scene" class="primary"><i class="fa-solid fa-plus"></i> Add Scene</button>
+            <button id="preview-video" class="secondary"><i class="fa-solid fa-play"></i> Preview</button>
+            <button id="export-video" class="secondary"><i class="fa-solid fa-file-video"></i> Export (Colab)</button>
           </div>
+          <div class="workspace">
+            <div class="left-panel">
+              <div class="card">
+                <h3>Selected Scene</h3>
+                <div id="selected-info">No scene selected</div>
+                <div class="controls">
+                  <label>Replace Image <input type="file" id="replace-image" accept="image/*"></label>
+                  <label>Transition
+                    <select id="selected-transition">
+                      <option value="cut">Cut</option>
+                      <option value="fade">Fade</option>
+                      <option value="zoom">Zoom</option>
+                      <option value="pan">Pan</option>
+                    </select>
+                  </label>
+                  <label>Duration (s) <input id="selected-duration" type="number" min="1" max="20" value="3"></label>
+                  <button id="save-scene" class="primary">Save Scene</button>
+                  <div style="margin-top:10px">
+                    <button id="regenerate-scene" class="secondary">Regenerate Scene</button>
+                    <button id="download-scene" class="secondary"><i class="fa-solid fa-download"></i> Download Image</button>
+                  </div>
+                </div>
+              </div>
 
-          <div id="studio-timeline" class="timeline"></div>
+              <div class="card">
+                <h3>Voice / Script</h3>
+                <textarea id="scene-script" placeholder="Scene narration (optional)"></textarea>
+                <div class="row">
+                  <label>Voice Model
+                    <select id="scene-voice-model">
+                      <option>Premium Male</option>
+                      <option>Premium Female</option>
+                      <option>Natural Narrator</option>
+                    </select>
+                  </label>
+                  <button id="generate-voice" class="primary">Generate Voice</button>
+                </div>
+                <div id="scene-audio" class="voice-result hidden">
+                  <audio id="scene-audio-player" controls></audio>
+                  <a id="scene-audio-download" href="#" download="scene_audio.mp3">⬇ Download Audio</a>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="right-panel">
+              <div class="timeline-toolbar">
+                <input id="search-scenes" placeholder="Search scenes...">
+                <button id="auto-arrange" class="secondary">Auto Arrange</button>
+              </div>
+
+              <div id="timeline" class="timeline"></div>
+            </div>
+          </div>
         </div>
 
-        <!-- VOICE WORKSPACE (inline — no popups) -->
+        <!-- VOICE PANEL -->
         <div id="voice-panel" class="panel-card hidden">
-          <label class="label">Voice Studio — Select model, style, generate</label>
-          <textarea id="voice-text" placeholder="Enter narration text here..."></textarea>
-
+          <label class="label">Voice Studio — Inline (no popups)</label>
+          <textarea id="voice-text" placeholder="Enter narration text, or use scene script..."></textarea>
           <div class="row">
             <label>Voice Model
               <select id="voice-model">
                 <option value="eleven">ElevenLabs-style (Premium)</option>
                 <option value="bark">Bark (Natural)</option>
                 <option value="coqui">Coqui (Fast)</option>
-                <option value="custom">Custom / Cloned</option>
+                <option value="custom">Custom/Cloned</option>
               </select>
             </label>
-
             <label>Style
               <select id="voice-style">
-                <option value="narration">Narration</option>
-                <option value="dramatic">Dramatic</option>
-                <option value="calm">Calm</option>
-                <option value="news">News</option>
+                <option value="narration">Narration</option><option value="dramatic">Dramatic</option>
+                <option value="calm">Calm</option><option value="news">News</option>
               </select>
             </label>
           </div>
-
           <div class="row">
             <label>Speed <input id="voice-speed" type="range" min="0.6" max="1.6" step="0.05" value="1"></label>
             <label>Pitch <input id="voice-pitch" type="range" min="0.7" max="1.5" step="0.05" value="1"></label>
-            <button id="generate-voice" class="primary">Generate Voice</button>
+            <button id="voice-generate" class="primary">Generate & Download</button>
           </div>
 
           <div id="voice-result" class="voice-result hidden">
             <audio id="voice-player" controls></audio>
-            <a id="voice-download" class="btn-link" href="#" download="narration.mp3">⬇ Download audio</a>
+            <a id="voice-download" href="#" download="narration.mp3">⬇ Download audio</a>
           </div>
-          <p class="note">Note: High-quality voices require backend TTS integration (Colab/ElevenLabs/Coqui).</p>
         </div>
 
-        <!-- GALLERY -->
+        <!-- PROJECT PANEL -->
+        <div id="project-panel" class="panel-card hidden">
+          <label class="label">Project — Export / Import</label>
+          <div class="row">
+            <button id="export-json" class="primary">Export Project (JSON)</button>
+            <label>Import Project <input type="file" id="import-json" accept="application/json"></label>
+            <button id="clear-project" class="secondary">Clear Project</button>
+          </div>
+          <div id="project-info" style="margin-top:12px;color:#9fb3c8"></div>
+        </div>
+
+        <!-- GALLERY (shows images generated) -->
         <div id="gallery" class="gallery-grid"></div>
 
         <!-- PROGRESS -->
@@ -142,6 +195,9 @@
           <div id="progress-bar"></div>
           <div id="progress-text">Working…</div>
         </div>
+
+        <!-- Hidden file input for scene replace (reused) -->
+        <input type="file" id="hidden-replace-input" accept="image/*" class="hidden">
       </section>
     </main>
   </div>
