@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Image & Video Studio — Premium</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <h2>AI Studio</h2>
+      <small>Personal Generator — Premium Theme</small>
+    </div>
+
+    <div class="panel">
+      <h3>Modes</h3>
+      <button class="mode-btn" data-mode="normal">Normal Image</button>
+      <button class="mode-btn" data-mode="reference">Reference Image</button>
+      <button class="mode-btn" data-mode="story">Storytelling (100)</button>
+      <button class="mode-btn" data-mode="thumbnail">Thumbnail</button>
+      <hr>
+      <h3>Model</h3>
+      <select id="model">
+        <option value="flux-dev">Flux-Dev — Ultra</option>
+        <option value="flux-schnell">Flux-Schnell — Fast</option>
+        <option value="sd15">Stable Diffusion 1.5</option>
+        <option value="sdxl">SDXL 1.0</option>
+        <option value="dreamshaper">DreamShaper</option>
+        <option value="openjourney">OpenJourney (MJ-like)</option>
+      </select>
+
+      <h3>Video / Render</h3>
+      <label><input type="radio" name="render_mode" value="fast" checked> Fast</label>
+      <label><input type="radio" name="render_mode" value="high"> High Quality</label>
+      <label><input type="radio" name="render_mode" value="balanced"> Balanced</label>
+
+      <h3>Transitions</h3>
+      <select id="transition">
+        <option value="cut">Cut</option>
+        <option value="fade">Fade</option>
+        <option value="pan">Pan</option>
+        <option value="zoom">Zoom</option>
+      </select>
+
+      <hr>
+      <button id="open-settings">Settings</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="top">
+      <div class="left">
+        <h1 id="mode-title">Normal Image Mode</h1>
+      </div>
+      <div class="right">
+        <button id="download-zip">Download ZIP</button>
+        <button id="clear-gallery">Clear</button>
+      </div>
+    </header>
+
+    <section class="controls">
+      <div class="left-col">
+        <label for="prompt">Prompt</label>
+        <textarea id="prompt" placeholder="Type cinematic prompt..."></textarea>
+
+        <div id="reference-upload" class="hidden">
+          <label>Upload Reference Image</label>
+          <input type="file" id="ref-img" accept="image/*">
+        </div>
+
+        <div class="row">
+          <label>Variations
+            <select id="variations">
+              <option value="1">1</option>
+              <option value="4">4</option>
+              <option value="7">7</option>
+              <option value="9">9</option>
+            </select>
+          </label>
+
+          <label>Aspect Ratio
+            <select id="size">
+              <option value="512x512">512×512 (1:1)</option>
+              <option value="768x1024">768×1024 (3:4)</option>
+              <option value="1280x720">1280×720 (16:9)</option>
+              <option value="1920x820">1920×820 (21:9)</option>
+            </select>
+          </label>
+
+          <label><input type="checkbox" id="nsfw"> Allow NSFW</label>
+        </div>
+
+        <div class="buttons">
+          <button id="generate">Generate</button>
+          <button id="generate-story">Generate Story (100)</button>
+        </div>
+
+        <hr>
+        <label for="script">Script / Voice (optional)</label>
+        <textarea id="script" placeholder="Optional narration script for storytelling or video..."></textarea>
+        <div class="voice-row">
+          <select id="voice-select">
+            <option value="bark">Bark (TTS)</option>
+            <option value="coqui">Coqui TTS</option>
+            <option value="eleven">Premium Voice</option>
+          </select>
+          <button id="tts-preview">Play Voice Preview</button>
+        </div>
+
+      </div>
+
+      <div class="right-col">
+        <div class="progress" id="progress" style="display:none;">
+          <div class="bar" id="progress-bar"></div>
+          <div id="progress-text"></div>
+        </div>
+
+        <div id="gallery" class="gallery"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal for image preview -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-inner">
+      <button class="close" id="modal-close">&times;</button>
+      <img id="modal-img" src="">
+      <div class="modal-actions">
+        <button id="regenerate">Regenerate</button>
+        <button id="download">Download</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
